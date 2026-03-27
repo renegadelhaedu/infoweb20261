@@ -2,16 +2,25 @@
 from flask import *
 from blueprints.bp_professor import  bp_prof
 from extensao import bd
+#esse login_manager é o objeto que controla os acessos
+from extensao import login_manager
+
 
 
 def criar_servidor():
     #instanciando o servidor web flask
     app = Flask(__name__)
+    #gerar chave secreta para ser usado no controle de sessao(cookies)
+    app.config['SECRET_KEY'] = 'KJHJH3w42#n!'
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:12345@localhost:5432/infoweb20261'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     app.config['SQLALCHEMY_ECHO'] = True
     bd.init_app(app)
+
+    #vinculando o login manager ao teu servidor flask
+    login_manager.init_app(app)
+    login_manager.login_view = 'home_page'
 
     #vinculando cada blueprint com o servidor flask
     app.register_blueprint(bp_prof)
@@ -22,13 +31,14 @@ def criar_servidor():
     def home_page():
         return render_template("login.html")
 
-
+    #retornando o objeto que representa o servidor flask
     return app
 
 
 if __name__ == '__main__':
-    app = criar_servidor()
-    with app.app_context():
+    servidor = criar_servidor()
+    with servidor.app_context():
         bd.create_all()
-    app.run(debug=True)
+    #executa a aplicação web - servidor on
+    servidor.run(debug=True, host='0.0.0.0')
 

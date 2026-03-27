@@ -1,0 +1,61 @@
+aula de hoje. Controle de acesso via flask-login
+
+galera, o flask-login precisa destas coisas:
+
+1- instale no seu projeto o flask login
+
+2- configure uma secret key
+app.config['SECRET_KEY'] = 'KJHJH3w42#n!'
+
+3- no seu arquivo de extensão, importe e instancie o loginmanager
+from flask_login import LoginManager
+login_manager = LoginManager()
+
+4- no seu servidor, importe a instância do do login manager
+from extensao import login_manager
+
+5- no servidor vincule o login manager a instancia do servidor flask e configure
+login_manager.init_app(app)
+login_manager.login_view = 'auth.login'
+login_manager.login_message = "Por favor, faça login para acessar a página"
+login_manager.login_message_category = 'info'
+
+6- vá nos seus modelos que dependem de acesso para controlar a sessão, importe as seguintes classes e lembre de fazer seu model herdar UserMixin
+from extensao import login_manager
+from flask_login import UserMixin
+
+class User(db.Model, UserMixin):
+
+7- neste mesmo model você precisa dizer ao flask login como carregar o usuario pelo id usando o user_loader
+@login_manager.user_loader
+def load_user(user_id):
+    #aqui eu carrego o usuario pelo id por meio do flask login puxando lá do banco
+    return User.query.get(int(user_id))
+
+8- na sua rota de fazer login, se o user e senha tiverem corretos, use a função login_user(user) dentro.
+from flask_login import login_user, logout_user, current_user
+login_user(user)
+
+9- lembrem de fazer a rota de logout e usar a função logout_user()
+@auth_bp.route("/logout")
+def logout():
+    logout_user()
+    flash('Você saiu da sua conta', 'info')
+    return redirect(url_for('auth.login'))
+
+10- dentro da mesma blueprint de rotas, você pode sempre testar se o usuário já tá autenticado. Exemplo:
+@auth_bp.route("/login", methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
+    resto do código para fazer login...
+
+11- agora você pode proteger suas rotas usando o decorador @login_required
+from flask_login import login_required, current_user
+@main_bp.route("/produto/add", methods=['POST'])
+@login_required
+def add_produto():
+
+se o usuário não tiver logado, ele manda para a rota que você cadastrou lá no servidor
+login_manager.login_view = 'auth.login'
+
