@@ -1,5 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
+from decorators import professor_required
 import requests
 
 from dao.professor_dao import ProfessorDao
@@ -16,17 +17,18 @@ bp_prof = Blueprint('professor', __name__, url_prefix='/professor')
 def fazer_login_professor():
     email_login = request.form.get('usuario')
     senha = request.form.get('senha')
-
+    print('chegou')
     #objeto trazido do banco de dados (None se nao existe)
     professor = professor_dao.verificar_login(email_login, senha)
-
+    print(professor)
     if professor:#verifica se esse objeto possui instância
 
         #função utilizada para colocar o objeto professor na sessao sob responsabilidade do login manager
         login_user(professor)
 
         return redirect(url_for('professor.mostrar_principal'))
-    return render_template('login.html', msg='usuário nao encontrado')
+
+    return render_template('login.html' , msg='usuário nao encontrado')
     #em sala mostrei as duas formas
     #return redirect(url_for('home_page'))
 
@@ -50,8 +52,11 @@ def cadastrar_professor():
 
 @bp_prof.route('/principal')
 @login_required
+@professor_required
 def mostrar_principal():
-    #aqui vc pode usar o current_user para pegar dados do usuario logado
+    print('entrou no principal de professor')
+    #aqui vc pode usar o current_user para pegar dados do usuario logado (objeto professor)
+    print('usuario logado' , current_user.nome)
     return render_template('principalprofessor.html')
 
 

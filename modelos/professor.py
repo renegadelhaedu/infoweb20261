@@ -1,11 +1,6 @@
 from extensao import bd
-from extensao import login_manager
 from flask_login import UserMixin
 
-@login_manager.user_loader
-def load_user(user_id):
-    #aqui eu carrego o usuario pelo id por meio do flask login puxando lá do banco
-    return Professor.query.get(int(user_id))
 
 #herança: professor é model do sqlalchemy e tambem um UserMixin
 class Professor(bd.Model, UserMixin):
@@ -18,6 +13,14 @@ class Professor(bd.Model, UserMixin):
 
     def __repr__(self):
         return f"Professor('{self.nome}', '{self.email}')"
+
+    @property
+    def is_professor(self):
+        return True
+
+    def get_id(self):
+        return f"prof_{self.id}"
+
 
 
 

@@ -1,6 +1,7 @@
 #no terminal => pip install flask
 from flask import *
 from blueprints.bp_professor import  bp_prof
+from blueprints.bp_aluno import  bp_aluno
 from extensao import bd
 #esse login_manager é o objeto que controla os acessos
 from extensao import login_manager
@@ -24,12 +25,13 @@ def criar_servidor():
 
     #vinculando cada blueprint com o servidor flask
     app.register_blueprint(bp_prof)
+    app.register_blueprint(bp_aluno)
 
 
     #criando uma rota (endpoint) de acesso no backend
     @app.route('/')
     def home_page():
-        return render_template("login.html")
+        return render_template("login.html", nome='teste')
 
     #retornando o objeto que representa o servidor flask
     return app
@@ -40,5 +42,5 @@ if __name__ == '__main__':
     with servidor.app_context():
         bd.create_all()
     #executa a aplicação web - servidor on
-    servidor.run(debug=True, host='0.0.0.0')
+    servidor.run(debug=True, port=5000)
 

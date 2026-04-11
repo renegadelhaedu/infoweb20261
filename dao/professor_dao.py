@@ -19,3 +19,6 @@ class ProfessorDao:
             print(e)
             self.bd.session.rollback()
             return False
+
+    def listar_professores(self):
+        return Professor.query.all()
