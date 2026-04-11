@@ -1,8 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
-from blueprints.bp_aluno import aluno_dao
-
 #instanciar o objeto do login manager
 login_manager = LoginManager()
 bd = SQLAlchemy()

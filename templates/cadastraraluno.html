@@ -25,6 +25,7 @@
         <select id="id_professor" name="id_professor" required>
             <option value="" disabled selected>Escolha um professor...</option>
 
+
             {% for prof in professores %}
                 <option value="{{ prof.id }}">
                     {{ prof.nome }} (Projeto: {{ prof.nome_projeto }})

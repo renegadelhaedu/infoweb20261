@@ -34,8 +34,10 @@ def cadastrar_aluno():
     if request.method == 'GET':
         professores = professor_dao.listar_professores()
         #tem que fazer uma verificaçao se tem prof cadastrado. se nao tem, nao pode cadastrar aluno
+        if len(professores) > 0:
+            return render_template('cadastraraluno.html' , professores=professores)
 
-        return render_template('cadastraraluno.html' , professores=professores)
+        return render_template('login.html', msg='nao tem professores cadastrados')
 
     nome = request.form.get('nome')
     email = request.form.get('email')
