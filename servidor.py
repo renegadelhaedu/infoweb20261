@@ -5,16 +5,18 @@ from blueprints.bp_aluno import  bp_aluno
 from extensao import bd
 #esse login_manager é o objeto que controla os acessos
 from extensao import login_manager
+import os
+from dotenv import load_dotenv
 
-
+load_dotenv()
 
 def criar_servidor():
     #instanciando o servidor web flask
     app = Flask(__name__)
     #gerar chave secreta para ser usado no controle de sessao(cookies)
-    app.config['SECRET_KEY'] = 'KJHJH3w42#n!'
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:12345@localhost:5432/infoweb20261'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     app.config['SQLALCHEMY_ECHO'] = True
     bd.init_app(app)

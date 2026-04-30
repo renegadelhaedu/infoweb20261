@@ -1,0 +1,81 @@
+-importância do GIT, GitHub
+-projeto da disciplina
+
+GIT (local + comandos)
+GitHub (repositório na núvem)
+GitHub CLI
+
+Criar pasta, criar venv (virtual enviroment)
+linux:  python3 -m venv .venv
+Windows: python -m venv .venv
+
+ativar a venv
+linux:  source .venv/bin/activate
+windows:  .venv/Scripts/activate
+
+Windows python como variável de ambiente
+
+Galera, pq estamos usando o GitHub CLI? dispensa configurar senhas complexas no terminal.
+
+No terminal digite o comando abaixo
+
+gh auth login
+
+
+O terminal fará algumas perguntas. Use as setinhas do teclado para escolher as opções de acordo com o que eu pedir:
+
+What account do you want to log into? Escolha GitHub.com
+What is your preferred protocol for Git operations? Escolha HTTPS
+Authenticate Git with your GitHub credentials? Escolha Yes
+How would you like to authenticate GitHub CLI? Escolha Login with a web browser
+
+Um código de 8 letras/números vai aparecer no terminal. Copie esse código, aperte Enter para abrir o navegador, cole o código na página do GitHub e autorize o acesso.
+
+
+Bora identificar quem é você no Git
+Digite os comandos abaixo substituindo com o seu nome e o e-mail que você usou para criar a conta no GitHub:
+
+git config --global user.name "renegadelhaedu"
+git config --global user.email "renegadelha.edu@gmail.com"
+
+-----parei aqui no terminal-----
+Vamos para o github criar seu primeiro projeto (Repositório Local)
+Vamos criar um projeto da disciplina e iniciar o "rastreamento" do Git nela.
+
+Crie um projeto e entre nele (cria o projeto no pycharm ou vscode, tanto faz):
+
+Transforme essa pasta comum em um repositório Git digitando no terminando (tem que tá dentro da pasta do projeto):
+git init
+
+cria teus arquivos .py (por enquanto crie apenas um principal.py com alguns comandos dentro)
+
+obs: criar um arquivo chamado README.md (um arquivo de apresentação do projeto) é OPCIONAL
+
+Agora vamos adicionar tudo o que você criou para enviar
+git add .
+(O ponto significa "adicione todos os arquivos modificados nesta pasta").
+
+PAUSA aqui que iremos fazer da forma mais didática e fácil para vocês:
+usaremos a interface do GitHub para criar o projeto e dar continuidade até o push
+obs: são 4 comandos copiados direto da interface do github
+
+RESUMO:
+git add . (prepara o conteúdo)
+
+git commit -m "mensagem do que você fez" (salva a versão)
+
+git push (envia para a nuvem)
+
+
+COMO ATUALIZAR modificações que fazemos no projeto:
+git add .
+git commit -m "texto que caracteriza esta versão"
+git push
+
+git clone link do projeto.git
+
+
+-desvincular o terminal de minha conta no github
+gh auth logout
+
+

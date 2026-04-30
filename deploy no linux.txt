@@ -1,0 +1,85 @@
+galera, lembrem de instalar o git 
+sudo apt-get install git-all
+
+1: Configurando o Acesso Remoto (SSH)
+O primeiro passo é permitir que a máquina Windows controle a máquina Linux sem precisarmos estar fisicamente nela. Para isso, usamos o protocolo SSH (Secure Shell).
+
+No Servidor (Linux Mint):
+
+Atualize os pacotes e instale o servidor SSH:
+
+sudo apt update
+sudo apt install openssh-server
+
+Verifique se o serviço está rodando e anote o IP da máquina:
+
+sudo systemctl status ssh
+hostname -I
+
+Libere a porta 22 (padrão do SSH) no firewall:
+
+Bash
+
+sudo ufw allow ssh
+
+(ACHO QUE LUDGERO JÁ FEZ TUDO ISSO)
+
+Aí você vai no seu notebook para acessar o servidor remoto via ssh:
+
+Abra o PowerShell ou Prompt de Comando.
+
+Conecte-se usando o IP anotado e o nome de usuário do Linux:
+
+PowerShell
+ssh usuario_do_linux@192.168.0.17 (por exmeplo)
+Aceite a "fingerprint" (digitando yes) na primeira conexão e insira a senha.
+
+-----2: Configurando o Banco de Dados (PostgreSQL)
+Com o acesso remoto garantido, o próximo passo é preparar o local onde os dados da nossa aplicação serão armazenados.
+
+Ainda via terminal (agora conectado via SSH no Linux), instale o PostgreSQL:
+
+
+sudo apt install postgresql postgresql-contrib
+
+Acesse o console do administrador do banco de dados (o usuário postgres é criado automaticamente):
+
+sudo -i -u postgres psql
+
+Defina uma senha de segurança para o administrador(vc tem que esta rno PSQL):
+
+\password postgres
+
+(Digite a senha, confirme e depois digite \q para sair do console).
+
+confirme se deu certo
+sudo -u postgres psql -c "\du"
+
+OBS: tem que criar o banco
+
+-----3: Hospedando a Aplicação (Gunicorn)
+A aplicação está pronta e o banco configurado. Agora, precisamos de um servidor de aplicação (WSGI) para servir o código Python para a rede. Usaremos o Gunicorn.
+
+Certifique-se de que o Gunicorn está instalado no ambiente virtual do projeto:
+
+pip install gunicorn
+
+Libere a porta da aplicação no firewall do Linux (exemplo usando a porta 5050):
+
+sudo ufw allow 5050/tcp
+
+Suba a aplicação com o seguinte comando:
+
+gunicorn -w 4 -b 0.0.0.0:5050 "app:create_app()"
+
+
+vamos por partes estudar os parâmetros do gunicorn:
+
+-w 4: Número de workers (trabalhadores). Define quantas requisições simultâneas o servidor consegue processar ao mesmo tempo.
+
+-b 0.0.0.0:5050: O bind. O endereço 0.0.0.0 é crucial: ele diz ao servidor para aceitar conexões de qualquer IP da rede local. Se usassem 127.0.0.1, a aplicação só abriria no próprio Linux. A porta 5050 é a "porta de entrada" escolhida.
+
+"app:create_app()": Aponta para o arquivo (app.py) e para a função de fábrica do Flask (create_app()).
+
+agora vamos testar:
+abram o navegador no Windows e digitem: http://IP_DO_LINUX:5050. A aplicação deverá carregar com sucesso.

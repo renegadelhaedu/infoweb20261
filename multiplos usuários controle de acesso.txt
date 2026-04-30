@@ -1,0 +1,66 @@
+já que na nossa aplicação temos diversos usuários com controle de acesso diferenciado para endpoints/rotas da aplicação, iremos precisar cumprir algumas etapas p melhorar o code:
+
+1-no seu model (o do exemplo é aluno), herde UserMixin e crie dois métodos (te explico depois o pq):
+    @property
+    def is_professor(self):
+        return False
+
+    def get_id(self):
+        return f"aluno_{self.id}"
+
+2-no model professor, faça o mesmo porém com flag diferente:
+    @property
+    def is_professor(self):
+        return True
+
+    def get_id(self):
+        return f"prof_{self.id}"
+
+3-precisamos de um método que nos ajude a carregar o usuário baseado em quem está na sessão. o login manager usa o decorator user_loader e seu método load_user para carregar load_user
+
+@login_manager.user_loader
+def load_user(user_id):
+    from modelos.professor import Professor
+    from modelos.aluno import Aluno
+
+    try:
+        tipo_usuario, id_numerico = user_id.split('_')
+        id_numerico = int(id_numerico)
+
+        if tipo_usuario == 'prof':
+            return Professor.query.get(id_numerico)
+        elif tipo_usuario == 'aluno':
+            return Aluno.query.get(id_numerico)
+
+    except ValueError:
+        return None
+
+4-agora a gente precisa criar um decorator para colocar nas rotas com acesso restrito. o padrão de nome do decorator é usar modelo_required
+
+def professor_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return redirect(url_for('home_page'))
+
+
+        if not current_user.is_professor:
+            #ai vc pode mostrar alguma mensagem via flash ou use texto,  exmeplo:
+            #flash('Acesso negado. aqui é restrito para professores', 'error')
+            logout_user()
+            return redirect(url_for('home_page'))
+
+        #galera, se chegar até aqui é pq é professor e passou nos dois testes anteriores
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+5-deu show. precisamos apenas colocar o decorator no endpoint:
+@bp_prof.route('/principal')
+@login_required
+@professor_required
+def mostrar_principal():
+    print('entrou no principal de professor')
+    #aqui vc pode usar o current_user para pegar dados do usuario logado
+    print('usuario logado' , current_user.nome)
+    return render_template('principalprofessor.html')
