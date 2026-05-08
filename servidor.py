@@ -1,7 +1,7 @@
 #no terminal => pip install flask
 from flask import *
-from blueprints.bp_professor import  bp_prof
-from blueprints.bp_aluno import  bp_aluno
+from controllers.bp_professor_rest_api import  bp_prof
+from controllers.bp_aluno import  bp_aluno
 from extensao import bd
 #esse login_manager é o objeto que controla os acessos
 from extensao import login_manager

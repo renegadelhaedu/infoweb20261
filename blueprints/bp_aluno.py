@@ -2,10 +2,10 @@ from flask import Blueprint, request, render_template, redirect, url_for
 from flask_login import login_user, logout_user, login_required
 
 
-from dao.aluno_dao import AlunoDao
-from dao.professor_dao import ProfessorDao
-aluno_dao = AlunoDao()
-professor_dao = ProfessorDao()
+from repository.aluno_repository import Aluno_repository
+from repository.professor_repository import Professor_repository
+aluno_dao = Aluno_repository()
+professor_dao = Professor_repository()
 
 
 bp_aluno = Blueprint('aluno', __name__, url_prefix='/aluno')
@@ -44,7 +44,7 @@ def cadastrar_aluno():
     senha = request.form.get('senha')
     id_professor = request.form.get('id_professor')
     print(id_professor)
-    #chama o dao para que seja inserido no banco de dados
+    #chama o repository para que seja inserido no banco de dados
     saida = aluno_dao.cadastrar_aluno(nome, email, senha, id_professor)
     if saida:
         return render_template('login.html')

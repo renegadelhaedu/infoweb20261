@@ -22,5 +22,13 @@ class Aluno(bd.Model, UserMixin):
     def get_id(self):
         return f"aluno_{self.id}"
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "email": self.email,
+            "id_professor": self.id_professor
+        }
+
 
 

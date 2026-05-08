@@ -3,11 +3,11 @@ from flask_login import login_user, logout_user, login_required, current_user
 from decorators import professor_required
 import requests
 
-from dao.professor_dao import ProfessorDao
+from repository.professor_repository import Professor_repository
 
 #faz login, lista alunos, adiciona aluno, remove aluno
 
-professor_dao = ProfessorDao()
+professor_dao = Professor_repository()
 
 
 #instanciei uma blueprint para que eu possa usar para criar rotas
@@ -42,7 +42,7 @@ def cadastrar_professor():
     senha = request.form.get('senha')
     nome_projeto = request.form.get('nome_projeto')
 
-    #chama o dao para que seja inserido no banco de dados
+    #chama o repository para que seja inserido no banco de dados
     saida = professor_dao.cadastrar_professor(nome, email, senha, nome_projeto)
     if saida:
         return render_template('login.html')
